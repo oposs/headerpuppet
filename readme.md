@@ -7,3 +7,8 @@ Extra header rows bound to a `qx.ui.table.Table` object.
 For complex tables it may be desirable to not have a single field to describe the content of the column or a group of columns, but a number of extra header lines.
 
 ![Peek 2019-06-07 14-31](https://user-images.githubusercontent.com/429279/59104131-00b86c80-8931-11e9-9ed9-01b865d95e6d.gif)
+
+## Further resources
+
+- [Live Demo](https://oposs.github.io/headerpuppet/)
+- [Api Documentation](https://oposs.github.io/headerpuppet/apiviewer/)
