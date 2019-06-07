@@ -1,0 +1,64 @@
+{
+  "$schema": "https://raw.githubusercontent.com/qooxdoo/qooxdoo-compiler/master/source/resource/qx/tool/schema/compile-1-0-0.json",
+  "targets": [
+    {
+      "type": "source",
+      "outputPath": "compiled/source",
+      "bundle": {
+        "include": "qx.*"
+      }
+    },
+    {
+      "type": "build",
+      "outputPath": "compiled/build"
+    }
+  ],
+  "defaultTarget": "source",
+  "locales": [
+    "en"
+  ],
+  "applications": [
+    {
+      "class": "headerpuppet.demo.Application",
+      "theme": "qx.theme.Simple",
+      "name": "headerpuppet",
+      "environment": {}
+    },
+    {
+      "class": "qxl.testtapper.Application",
+      "name": "testtapper",
+      "theme": "qx.theme.Simple",
+      "title": "Qooxdoo TestTAPper",
+      "environment": {
+        "qx.icontheme": "Tango"
+      },
+      "include": [
+        "headerpuppet.test.*"
+      ]
+    },
+    {
+      "class": "qxl.apiviewer.Application",
+      "theme": "qxl.apiviewer.Theme",
+      "name": "apiviewer",
+      "title": "Qooxdoo API Viewer",
+      "environment": {
+        "qx.icontheme": "Tango",
+        "excludeFromAPIViewer": [
+          "qxl.*",
+          "q",
+          "qxWeb",
+          "headerpuppet.demo.*",
+          "headerpuppet.test.*"
+        ]
+      },
+      "include": [
+        "headerpuppet.*"
+      ],
+      "exclude": [
+        "qx.test.*",
+        "qx.module.Blocker",
+        "qx.module.Placement"
+      ]
+    }
+  ]
+}

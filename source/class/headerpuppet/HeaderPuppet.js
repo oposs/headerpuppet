@@ -1,0 +1,204 @@
+/* ************************************************************************
+
+   Copyright: 2019 OETIKER+PARTNER AG
+
+   License: MIT license
+
+   Authors: Tobias Oetiker (oetiker) tobi@oetiker.ch
+
+************************************************************************ */
+
+/**
+ * Qooxdoo tables have a single header row. For complex content this may
+ * be a little limited. The HeaderPuppet creates a grid structure synced
+ * to the header of the table. The cool thing about the grid is that
+ * it support colSpan and rowSpan allowing to produce pretty nifty setups.
+ * into a VBox layout. When attaching the HeaderPuppet to a table, then the
+ * the table will loose the ability to modify which columns are hidden and also
+ * the ability to alter the order of columns.
+ * 
+ * <pre class="javascript">
+ * let win = new qx.ui.window.Window("Table").set({
+ *    layout : new qx.ui.layout.VBox(),
+ *    contentPadding: 0,
+ *    centerOnAppear: true
+ * });
+ * let tableModel = new qx.ui.table.model.Simple();
+ * tableModel.setColumns([ "ID", "A number", "A date", "Boolean" ]);
+ *
+ * var table = new qx.ui.table.Table(tableModel).set({
+ *    allowGrowY: true
+ * });
+ *
+ * var headers = [
+ *  { text: "A Long Long Title with multiple lines", rich: true,
+ *    column: 0, row:0, rowSpan:2, alignY: 'middle', textAlign: 'center' },
+ *  { text: "Hello World Hello World", column: 1, row:0, colSpan: 2,
+ *    alignX: 'center', alignY: 'middle' },
+ *  { text: "Another Test shifted by one column", column: 2, row:1, colSpan: 2,
+ *    alignX: 'right', textAlign: 'right', rich:true}
+ *  ];
+ * win.add(new headerpuppet.HeaderPuppet(table,headers));  
+ * win.add(table,{flex: 1});
+ * win.open();
+ * </pre>
+ * 
+ * @asset(headerpuppet/*)
+ */
+qx.Class.define("headerpuppet.HeaderPuppet", {
+    extend : qx.ui.core.Widget,
+    /**
+     * 
+     * @param tableWidget {qx.ui.table.Table}
+     *      The table we want to add extra headers to
+     * @param configuration {Array} 
+     *  An array of Maps defining the content of the extra header area.
+     *  Each entry can use the following mandatory parameters: 
+     * <pre>
+     *  **text** the text to be shown in the field
+     * 
+     *  **column** the column for this entry (starting with 0)
+     * 
+     *  **row** the row for this entry (starting with 0) 
+     * </pre>
+     * 
+     * Optional parameters
+     * 
+     * <pre>  
+     *  **rowSpan** number of rows this label should cover
+     *  
+     *  **colSpan** number of columns this label should cover
+     * 
+     *  **rich** expect html input, automated line breaks
+     * 
+     *  **backgroundColor** by default labels have a white background color
+     * 
+     *  **alignX** takes one of `left`, `right`, `center` to indicate how to position the label widget if there is more space than required. Default is `left`.
+     * 
+     *  **alignY** takes one of `top`,`bottom`, `middle` to indicate the the vertical position of the label.
+     * 
+     *  **textAlign** takes one of `left`, `right`, `center` to indicate the text alignment inside the label.
+     * </pre>
+     * 
+     */
+    construct: function(tableWidget,configuration){
+        this.base(arguments);
+        // this.setAppearance('headerpuppet');
+        let layout = new qx.ui.layout.Grid(
+            this.getLineWidth(),this.getLineWidth()
+        );
+        this.setBackgroundColor(this.getLineColor());
+        this._setLayout(layout);
+        configuration.forEach(cell => { this._addCell(cell)});
+
+        let tcm = tableWidget.getTableColumnModel();
+
+        /* install the column with syncing */
+        tcm.addListener('widthChanged',e => {
+            var data = e.getData();
+            layout.setColumnWidth(data.col,
+                tcm.getColumnWidth(data.col)-this.getLineWidth());
+        });
+ 
+        /* set initial column widths */
+        for (var i = 0;i<tcm.getVisibleColumnCount();i++){
+            layout.setColumnWidth(i,tcm.getColumnWidth(i)-1);
+        }
+
+        /* add empty labels */
+        for (let c = 0;c<=tcm.getVisibleColumnCount();c++){
+            for (let r = 0; r < layout.getRowCount(); r++){
+                if (! layout.getCellWidget(r,c)){
+                    let bg = new qx.ui.core.Widget().set({
+                        // appearance: "headerpuppet/cell",
+                        backgroundColor: this.getCellBackgroundColor(),
+                        height: 5,
+                        allowGrowX: true,
+                        allowGrowY:true,
+                        allowShrinkY: true
+                    });
+                    this._add(bg,{column:c,row:r});
+                }
+            }
+        }
+        layout.setColumnFlex(tcm.getVisibleColumnCount(),1);
+        
+        /* disable header cell mover by overwriting it */
+        let ps = tableWidget.getPaneScroller(0);
+        ps._startMoveHeader = function(){};
+
+        /* diable column visibility button */
+        tableWidget.setColumnVisibilityButtonVisible(false)
+    },
+    properties: {
+        /**
+         * width of the grid line in the header
+         */
+        lineWidth: {
+            init: 1
+        },
+        /**
+         * color of the grid lines
+         */
+        lineColor: {
+            init: '#eee'
+        },
+        /**
+         * cell padding
+         */
+        cellPadding: {
+            init: 3
+        },
+        /**
+         * cellBackgroundColor
+         */
+        cellBackgroundColor: {
+            init: '#fff'
+        }
+    },
+    members: {
+        /**
+         * 
+         * @param keys {Array} 
+         */
+        _filterMap: function(srcMap,dstMap,keys){
+            keys.forEach(key => {
+                if (srcMap[key] !== undefined){
+                    dstMap[key]=srcMap[key];
+                }
+            });
+            console.log(dstMap);
+            return dstMap;
+        },
+        _addCell: function(cell) {
+            let container = new qx.ui.core.Widget().set({
+              backgroundColor: (
+                cell.backgroundColor || this.getCellBackgroundColor()),
+              // appearance: "headerpuppet/cell",
+              allowGrowX: true,
+              allowGrowY: true,
+              padding: this.getCellPadding()
+            });
+
+            let containerLayout = new qx.ui.layout.Grid(0,0);
+
+            containerLayout.setColumnFlex(0,1);
+            containerLayout.setRowFlex(0,1);
+
+            container._setLayout(containerLayout);
+
+            let label = new qx.ui.basic.Label(cell.text).set(
+                this._filterMap(cell,{
+                },['rich','alignX','textAlign','alignY'])
+            );
+            
+            container._add(label,{column:0,row:0});
+            console.log("add container",container);
+            console.log(this);
+            this._add(container,this._filterMap(cell,{},
+                ['column','row','colSpan','rowSpan'])
+            );       
+        }
+    },
+
+});

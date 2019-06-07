@@ -1,0 +1,6 @@
+/compiled
+/qx_packages
+.package-cache.json
+/node_modules
+/.nyc_output
+*~

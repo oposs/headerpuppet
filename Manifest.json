@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/qooxdoo/qooxdoo-compiler/master/source/resource/qx/tool/schema/Manifest-1-0-0.json",
+  "info": {
+    "name": "HeaderPuppet",
+    "summary": "Extra header rows bound to a table",
+    "description": "For complex tables it may be desirable to not have a single field to describe the content of the column or a group of columns, but a number of extra header lines.",
+    "homepage": "https://github.com/oposs/headerpuppet",
+    "license": "MIT license",
+    "authors": [
+      {
+        "name": "Tobias Oetiker (oetiker)",
+        "email": "tobi@oetiker.ch"
+      }
+    ],
+    "version": "0.0.1"
+  },
+  "provides": {
+    "namespace": "headerpuppet",
+    "encoding": "utf-8",
+    "class": "source/class",
+    "resource": "source/resource",
+    "translation": "source/translation"
+  },
+  "requires": {
+    "@qooxdoo/framework": "^6.0.0-alpha-20190511-1022",
+    "@qooxdoo/compiler": "^1.0.0-beta.20190605-1257",
+    "qooxdoo/qxl.testtapper": "^0.4.0",
+    "qooxdoo/qxl.apiviewer": "^0.1.20"
+  }
+}
