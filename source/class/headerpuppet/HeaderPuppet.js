@@ -158,8 +158,12 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
     },
     members: {
         /**
+         * Place the entries from the source map with matching
+         * keys in the keys array into the dstMap.
          * 
-         * @param keys {Array} 
+         * @param srcMap {Map} burstin with key value pairs
+         * @param dstMap {Map} a potentially pre-seeded map to receive data from srcMap for the keys listed in the keys array.
+         * @param keys {Array} a list of valid keys for destination map
          */
         _filterMap: function(srcMap,dstMap,keys){
             keys.forEach(key => {
@@ -167,9 +171,13 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
                     dstMap[key]=srcMap[key];
                 }
             });
-            console.log(dstMap);
             return dstMap;
         },
+
+        /**
+         * 
+         * @param cell {Map} a single line from the configuration array.
+         */
         _addCell: function(cell) {
             let container = new qx.ui.core.Widget().set({
               backgroundColor: (
@@ -193,8 +201,6 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
             );
             
             container._add(label,{column:0,row:0});
-            console.log("add container",container);
-            console.log(this);
             this._add(container,this._filterMap(cell,{},
                 ['column','row','colSpan','rowSpan'])
             );       
