@@ -1,5 +1,7 @@
 # HeaderPuppet - a qooxdoo package
 
+[![Build Status](https://travis-ci.org/oposs/headerpuppet.svg?branch=master)](https://travis-ci.org/oposs/headerpuppet)
+
 Extra header rows bound to a `qx.ui.table.Table` object.
 
 For complex tables it may be desirable to not have a single field to describe the content of the column or a group of columns, but a number of extra header lines.

@@ -5,8 +5,8 @@ script:
   - ./runtests.sh
   - npx qx compile --machine-readable --target=build
 
-after_success:
-  - npx nyc report --reporter=text-lcov | npx coveralls
+# after_success:
+#  - npx nyc report --reporter=text-lcov | npx coveralls
 
 deploy:
   provider: pages
