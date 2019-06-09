@@ -16,7 +16,7 @@
  * into a VBox layout. When attaching the HeaderPuppet to a table, then the
  * the table will loose the ability to modify which columns are hidden and also
  * the ability to alter the order of columns.
- * 
+ *
  * <pre class="javascript">
  * let win = new qx.ui.window.Window("Table").set({
  *    layout : new qx.ui.layout.VBox(),
@@ -38,48 +38,48 @@
  *  { text: "Another Test shifted by one column", column: 2, row:1, colSpan: 2,
  *    alignX: 'right', textAlign: 'right', rich:true}
  *  ];
- * win.add(new headerpuppet.HeaderPuppet(table,headers));  
+ * win.add(new headerpuppet.HeaderPuppet(table,headers));
  * win.add(table,{flex: 1});
  * win.open();
  * </pre>
- * 
+ *
  * @asset(headerpuppet/*)
  */
 qx.Class.define("headerpuppet.HeaderPuppet", {
     extend : qx.ui.core.Widget,
     /**
-     * 
+     *
      * @param tableWidget {qx.ui.table.Table}
      *      The table we want to add extra headers to
-     * @param configuration {Array} 
+     * @param configuration {Array}
      *  An array of Maps defining the content of the extra header area.
-     *  Each entry can use the following mandatory parameters: 
+     *  Each entry can use the following mandatory parameters:
      * <pre>
      *  **text** the text to be shown in the field
-     * 
+     *
      *  **column** the column for this entry (starting with 0)
-     * 
-     *  **row** the row for this entry (starting with 0) 
+     *
+     *  **row** the row for this entry (starting with 0)
      * </pre>
-     * 
+     *
      * Optional parameters
-     * 
-     * <pre>  
+     *
+     * <pre>
      *  **rowSpan** number of rows this label should cover
-     *  
+     *
      *  **colSpan** number of columns this label should cover
-     * 
+     *
      *  **rich** expect html input, automated line breaks
-     * 
+     *
      *  **backgroundColor** by default labels have a white background color
-     * 
+     *
      *  **alignX** takes one of `left`, `right`, `center` to indicate how to position the label widget if there is more space than required. Default is `left`.
-     * 
+     *
      *  **alignY** takes one of `top`,`bottom`, `middle` to indicate the the vertical position of the label.
-     * 
+     *
      *  **textAlign** takes one of `left`, `right`, `center` to indicate the text alignment inside the label.
      * </pre>
-     * 
+     *
      */
     construct: function(tableWidget,configuration){
         this.base(arguments);
@@ -96,10 +96,11 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
         /* install the column with syncing */
         tcm.addListener('widthChanged',e => {
             var data = e.getData();
-            layout.setColumnWidth(data.col,
+            var realCol = tcm.getVisibleX(data.col);
+            layout.setColumnWidth(realCol,
                 tcm.getColumnWidth(data.col)-this.getLineWidth());
         });
- 
+
         /* set initial column widths */
         for (var i = 0;i<tcm.getVisibleColumnCount();i++){
             layout.setColumnWidth(i,tcm.getColumnWidth(i)-1);
@@ -122,7 +123,7 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
             }
         }
         layout.setColumnFlex(tcm.getVisibleColumnCount(),1);
-        
+
         /* disable header cell mover by overwriting it */
         let ps = tableWidget.getPaneScroller(0);
         ps._startMoveHeader = function(){};
@@ -160,7 +161,7 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
         /**
          * Place the entries from the source map with matching
          * keys in the keys array into the dstMap.
-         * 
+         *
          * @param srcMap {Map} burstin with key value pairs
          * @param dstMap {Map} a potentially pre-seeded map to receive data from srcMap for the keys listed in the keys array.
          * @param keys {Array} a list of valid keys for destination map
@@ -175,7 +176,7 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
         },
 
         /**
-         * 
+         *
          * @param cell {Map} a single line from the configuration array.
          */
         _addCell: function(cell) {
@@ -199,11 +200,11 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
                 this._filterMap(cell,{
                 },['rich','alignX','textAlign','alignY'])
             );
-            
+
             container._add(label,{column:0,row:0});
             this._add(container,this._filterMap(cell,{},
                 ['column','row','colSpan','rowSpan'])
-            );       
+            );
         }
     },
 
