@@ -78,17 +78,24 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
      *  **alignY** takes one of `top`,`bottom`, `middle` to indicate the the vertical position of the label.
      *
      *  **textAlign** takes one of `left`, `right`, `center` to indicate the text alignment inside the label.
+     *
+     *  **font** use a specific font in this cell
      * </pre>
      *
      */
     construct: function(tableWidget,configuration){
         this.base(arguments);
+        this.set({
+            paddingBottom: 1
+        })
         // this.setAppearance('headerpuppet');
-        let layout = new qx.ui.layout.Grid(
+        let layout = this._layout = new qx.ui.layout.Grid(
             this.getLineWidth(),this.getLineWidth()
         );
         this.setBackgroundColor(this.getLineColor());
         this._setLayout(layout);
+        this._labels = [];
+        this._cells = [];
         configuration.forEach(cell => { this._addCell(cell)});
 
         let tcm = tableWidget.getTableColumnModel();
@@ -118,6 +125,7 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
                         allowGrowY:true,
                         allowShrinkY: true
                     });
+                    this._cells.push(bg);
                     this._add(bg,{column:c,row:r});
                 }
             }
@@ -128,36 +136,88 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
         let ps = tableWidget.getPaneScroller(0);
         ps._startMoveHeader = function(){};
 
-        /* diable column visibility button */
-        tableWidget.setColumnVisibilityButtonVisible(false)
+        /* disable column visibility button */
+        tableWidget.setColumnVisibilityButtonVisible(false);
     },
     properties: {
         /**
          * width of the grid line in the header
          */
         lineWidth: {
-            init: 1
+            init: 1,
+            apply: "_applyPropChange"
+
         },
         /**
          * color of the grid lines
          */
         lineColor: {
-            init: '#eee'
+            init: '#eee',
+            apply: "_applyPropChange"
         },
         /**
          * cell padding
          */
         cellPadding: {
-            init: 3
+            init: 3,
+            apply: "_applyPropChange"
         },
         /**
          * cellBackgroundColor
          */
         cellBackgroundColor: {
-            init: '#fff'
+            init: '#fff',
+            apply: "_applyPropChange"
+        },
+        /**
+         * cellFont
+         */
+        cellFont: {
+            init: 'bold',
+            apply: "_applyPropChange"
         }
     },
     members: {
+        _layout: null,
+        _cells: null,
+        _labels: null,
+        /**
+         * Apply changes to the Properties
+         *
+         * @param {Number} value
+         * @param {Number} old
+         * @param {String} name
+         */
+        _applyPropChange: function(value,old,name) {
+            switch(name){
+                case "lineWidth":
+                    this._layout.set({
+                        spacingX: value,
+                        spacingY: value
+                    });
+                    break;
+                case "lineColor":
+                    this.set({
+                        background: value
+                    });
+                    break;
+                case "cellPadding":
+                    this._labels.forEach( cell => {
+                        cell.setPadding(value);
+                    });
+                    break;
+                case "cellBackgroundColor":
+                    this._cells.forEach( cell => {
+                        cell.setBackgroundColor(value);
+                    });
+                    break;
+                case "cellFont":
+                    this._labels.forEach( cell => {
+                        cell.setFont(value);
+                    });
+                    break;
+            }
+        },
         /**
          * Place the entries from the source map with matching
          * keys in the keys array into the dstMap.
@@ -188,7 +248,7 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
               allowGrowY: true,
               padding: this.getCellPadding()
             });
-
+            this._cells.push(container);
             let containerLayout = new qx.ui.layout.Grid(0,0);
 
             containerLayout.setColumnFlex(0,1);
@@ -198,9 +258,10 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
 
             let label = new qx.ui.basic.Label(cell.text).set(
                 this._filterMap(cell,{
-                },['rich','alignX','textAlign','alignY'])
+                    font: this.getCellFont()
+                },['rich','alignX','textAlign','alignY','font'])
             );
-
+            this._labels.push(label);
             container._add(label,{column:0,row:0});
             this._add(container,this._filterMap(cell,{},
                 ['column','row','colSpan','rowSpan'])

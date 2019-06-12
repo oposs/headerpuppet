@@ -55,15 +55,18 @@ qx.Class.define("headerpuppet.demo.Application",
 
             // table
             var table = new qx.ui.table.Table(tableModel).set({
-                allowGrowY: true
+                allowGrowY: true,
+                headerCellsVisible: false
             });
             table.getTableColumnModel().setColumnVisible(1,false);
             var headers = [
                 { text: "A Long Long Title with multiple lines", rich: true, column: 0, row:0, rowSpan:2, alignY: 'middle', textAlign: 'center' },
-                { text: "Hello World Hello World", column: 1, row:0, colSpan: 2,alignX: 'center', alignY: 'middle' },
+                { text: "Hello World Hello World", column: 1, row:0, colSpan: 2,alignX: 'center', alignY: 'middle',font: 'default' },
                 { text: "Another Test shifted by one column", column: 2, row:1, colSpan: 2, alignX: 'right', textAlign: 'right', rich:true}
               ];
-            win.add(new headerpuppet.HeaderPuppet(table,headers));
+            win.add(new headerpuppet.HeaderPuppet(table,headers).set({
+                cellBackgroundColor: '#ddd'
+            }));
             win.add(table,{flex: 1});
             win.open();
         },
