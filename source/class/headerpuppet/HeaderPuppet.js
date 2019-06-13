@@ -198,7 +198,7 @@ qx.Class.define("headerpuppet.HeaderPuppet", {
                     break;
                 case "lineColor":
                     this.set({
-                        background: value
+                        backgroundColor: value
                     });
                     break;
                 case "cellPadding":

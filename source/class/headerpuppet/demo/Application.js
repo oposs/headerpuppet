@@ -65,7 +65,11 @@ qx.Class.define("headerpuppet.demo.Application",
                 { text: "Another Test shifted by one column", column: 2, row:1, colSpan: 2, alignX: 'right', textAlign: 'right', rich:true}
               ];
             win.add(new headerpuppet.HeaderPuppet(table,headers).set({
-                cellBackgroundColor: '#ddd'
+                cellBackgroundColor: '#ddd',
+                lineColor: '#f00',
+                lineWidth: 3,
+                cellFont: 'default',
+                cellPadding: 5
             }));
             win.add(table,{flex: 1});
             win.open();
