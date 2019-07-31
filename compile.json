@@ -45,20 +45,12 @@
         "qx.icontheme": "Tango",
         "excludeFromAPIViewer": [
           "qxl.*",
-          "q",
+          "qx.*",
           "qxWeb",
           "headerpuppet.demo.*",
           "headerpuppet.test.*"
         ]
-      },
-      "include": [
-        "headerpuppet.*"
-      ],
-      "exclude": [
-        "qx.test.*",
-        "qx.module.Blocker",
-        "qx.module.Placement"
-      ]
+      }
     }
   ]
 }
