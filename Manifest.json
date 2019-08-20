@@ -12,7 +12,7 @@
         "email": "tobi@oetiker.ch"
       }
     ],
-    "version": "0.0.5"
+    "version": "0.0.6"
   },
   "provides": {
     "namespace": "headerpuppet",
@@ -23,6 +23,8 @@
   },
   "requires": {
     "@qooxdoo/framework": "^6.0.0-alpha",
-    "@qooxdoo/compiler": "^1.0.0-beta"
+    "@qooxdoo/compiler": "^1.0.0-beta",
+    "qooxdoo/qxl.testtapper": "^0.4.3",
+    "qooxdoo/qxl.apiviewer": "^1.0.0-beta"
   }
 }
